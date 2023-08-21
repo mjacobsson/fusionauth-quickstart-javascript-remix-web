@@ -12,7 +12,7 @@ The `/complete-application` directory contains a fully working version of the ap
 
 ## Project Dependencies
 * Docker, for running FusionAuth
-* Python 3.8 or later, for running the Changebank Python application
+* Node.js version 18 or later, for running the Changebank application
 
 ## Running FusionAuth
 To run FusionAuth, just stand up the docker containers using `docker-compose`.
@@ -24,14 +24,12 @@ docker-compose up
 This will start a PostgreSQL database, and Elastic service, and the FusionAuth server.
 
 ## Running the Example App
-To run the application set up a Python virtual env and installg the project dependencies.
+To run the application set up a Python virtual env and install the project dependencies.
 
 ```shell
 cd complete-application && \
-python -m venv venv && \
-source venv/bin/activate && \
-pip install -r requirements.txt && \
-python /mysite/manage.py runserver
+npm install && \
+npm run start
 ```
 
 Visit the local webserver at `http://localhost:8000/` and sign in using the credentials:
