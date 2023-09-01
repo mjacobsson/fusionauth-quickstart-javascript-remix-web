@@ -1,38 +1,99 @@
-# Example Django Application
+# Welcome to the FusionAuth Remix Demo!
 
-This repo holds an example Python/Django application that uses FusionAuth as the identity provider.
+- [Remix Docs](https://remix.run/docs)
+- [Remix Auth](https://github.com/sergiodxa/remix-auth)
+- [Remix-Auth-Oauth2 Docs](https://github.com/sergiodxa/remix-auth-oauth2)
+- [FusionAuth OAuth Docs](https://fusionauth.io/docs/v1/tech/oauth/endpoints)
 
-This application was built by following the [Python/Django Quickstart](https://fusionauth.io/docs/quickstarts/quickstart-python-django-web).
+## Prerequisites
 
-## Project Contents
+You need to have FusionAuth installed. Here's [instructions on how to do so](https://fusionauth.io/docs/v1/tech/installation-guide/)
 
-The `docker-compose.yml` file and the `kickstart` directory are used to start and configure a local FusionAuth server.
+## Notes about this Demo
 
-The `/complete-application` directory contains a fully working version of the application.
+In this demo, sending a GET request (or navigating to) the login route should redirect you to the FusionAuth login page. If you are already logged in, it will return you to the callbackUrl defined in `auth.server.ts`. This callback url must be entered in your FusionAuth App details. The default callback route `/auth/callback` will store the token in your file based session on the server, and issue a session ID that is stored in the client in your session cookie.
 
-## Project Dependencies
-* Docker, for running FusionAuth
-* Node.js version 18 or later, for running the Changebank application
+You will want to choose a different [session storage method](https://remix.run/docs/en/v1/api/remix#sessions) if you do not have persistent filesystem access on your Remix Deployment target.
 
-## Running FusionAuth
-To run FusionAuth, just stand up the docker containers using `docker-compose`.
+The files you will need to copy from this demo to any other Remix app you'd like to try FusionAuth with are:
 
-```shell
-docker-compose up
+```
+.gitignore
+.env
+package.json
+app/auth.server.ts
+app/session.server.ts
+app/routes/*
 ```
 
-This will start a PostgreSQL database, and Elastic service, and the FusionAuth server.
+Some of these files have the same name as files you likely already have in your Remix app, so be careful!
 
-## Running the Example App
-To run the application set up a Python virtual env and install the project dependencies.
 
-```shell
-cd complete-application && \
-npm install && \
-npm run start
+## Setup
+
+Run `npm install`.
+
+Copy the `env.example` to `.env` file and update it with your client secret, client Id and other settings.
+
+Here's an example `.env` file:
+
+```
+CLIENT_ID="90534dd2-a4b0-4a61-a596-580283134c02"
+CLIENT_SECRET="wmDpu-cMBgxCXKbGj93RsqAFjerAjiBHMi-7sP8VMAk"
+AUTH_URL="http://localhost:9011/oauth2"
+AUTH_CALLBACK_URL="http://localhost:3000/auth/callback"
 ```
 
-Visit the local webserver at `http://localhost:8000/` and sign in using the credentials:
+You'll also need to add the auth callback for your app to the FusionAuth application config.
 
-* username: richard@example.com
-* password: password
+## Development
+
+Start the Remix development asset server and the Express server by running:
+
+```sh
+npm run dev
+```
+
+This starts your app in development mode, which will purge the server require cache when Remix rebuilds assets so you don't need a process manager restarting the express server.
+
+## Deployment
+
+First, build your app for production:
+
+```sh
+npm run build
+```
+
+Then run the app in production mode:
+
+```sh
+npm start
+```
+
+Now you'll need to pick a host to deploy it to.
+
+### DIY
+
+If you're familiar with deploying express applications you should be right at home just make sure to deploy the output of `remix build`
+
+- `build/`
+- `public/build/`
+
+### Using a Template for Deployment
+
+When you ran `npx create-remix@latest` there were a few choices for hosting. You can run that again to create a new project, then copy over your `app/` folder to the new project that's pre-configured for your target server.
+
+```sh
+cd ..
+# create a new project, and pick a pre-configured host
+npx create-remix@latest
+cd my-new-remix-app
+# remove the new project's app (not the old one!)
+rm -rf app
+# copy your app over
+cp -R ../my-old-remix-app/app app
+```
+
+## Shoutouts
+
+Big thank you to Ben Wishovich @benwis who contributed most of this package! Also to @sergiodxa who wrote the remix-auth and remix-auth-oauth2 packages that we rely on here.
